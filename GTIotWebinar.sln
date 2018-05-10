@@ -7,10 +7,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotDevice", "IotDevice\IotD
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug - Register|Any CPU = Debug - Register|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{95E02801-AEBE-4809-9DCD-C72602DD9AB8}.Debug - Register|Any CPU.ActiveCfg = Debug - Register|Any CPU
+		{95E02801-AEBE-4809-9DCD-C72602DD9AB8}.Debug - Register|Any CPU.Build.0 = Debug - Register|Any CPU
 		{95E02801-AEBE-4809-9DCD-C72602DD9AB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{95E02801-AEBE-4809-9DCD-C72602DD9AB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95E02801-AEBE-4809-9DCD-C72602DD9AB8}.Release|Any CPU.ActiveCfg = Release|Any CPU

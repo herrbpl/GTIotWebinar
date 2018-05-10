@@ -1,0 +1,9 @@
+{
+  "thumbPrint": "3280f34d5612d24af3acd8a90eb3c750cbc8dfbe",
+  "deviceId": "iothubx509device1",
+  "iotHub": "gtlab02-iothub01.azure-devices.net",
+  "deviceProperties": {
+    "samplingFrequency": 5,
+    "temperatureAlertThreshold": 35
+  }
+}
