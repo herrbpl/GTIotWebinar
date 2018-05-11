@@ -4,7 +4,7 @@
   "iotHub": "gtlab02-iothub01.azure-devices.net",
   "deviceProperties": {
     "samplingFrequency": 10,
-    "temperatureAlertThreshold": 35,
+    "temperatureAlertThreshold": 25,
     "carCounterEnabled": 1
   }
 }

@@ -257,6 +257,8 @@ namespace IotDevice
                 // Create JSON message
                 var telemetryDataPoint = new
                 {
+                    eventtime = DateTime.UtcNow, 
+                    deviceid = deviceId,
                     temperature = currentTemperature,
                     humidity = currentHumidity,
                     carcounter = carCounter
