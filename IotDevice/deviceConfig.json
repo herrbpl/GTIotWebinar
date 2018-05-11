@@ -3,7 +3,8 @@
   "deviceId": "iothubx509device1",
   "iotHub": "gtlab02-iothub01.azure-devices.net",
   "deviceProperties": {
-    "samplingFrequency": 5,
-    "temperatureAlertThreshold": 35
+    "samplingFrequency": 10,
+    "temperatureAlertThreshold": 35,
+    "carCounterEnabled": 1
   }
 }

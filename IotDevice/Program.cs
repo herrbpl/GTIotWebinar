@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using CommandLine;
 using CommandLine.Text;
+using System.Threading;
 
 namespace IotDevice
 {
@@ -50,6 +51,12 @@ namespace IotDevice
         static DeviceIdentity deviceIdentity = new DeviceIdentity();
         static bool registerDevice = false;
 
+        // car counter
+        private static Int64 carCounter = 0;
+        private static CancellationTokenSource carCounterCts = null;
+        private static Task carCountingTask;
+        private static bool carCounterEnabled = false;
+
         static void Main(string[] args)
         {
             
@@ -69,6 +76,8 @@ namespace IotDevice
                 Console.WriteLine("Device initiated");
                 SendDeviceToCloudMessagesAsync();
                 Console.WriteLine("Messages starting");
+                if (carCounterEnabled) StartCarCounter();
+                //Task.Delay(10000).ContinueWith(task => { StopCarCounter(); });
 
             })
             .WithNotParsed<Options>((errs) => {
@@ -96,8 +105,8 @@ namespace IotDevice
                                 
             // Create device and connect
             IAuthenticationMethod auth = new DeviceAuthenticationWithX509Certificate(deviceId, deviceCert);
-            deviceClient = DeviceClient.Create(deviceIotHub, auth);            
-            
+            deviceClient = DeviceClient.Create(deviceIotHub, auth);
+            deviceClient.SetDesiredPropertyUpdateCallbackAsync(OnDesiredPropertyChanged, null).Wait();
             try
             {
                 await deviceClient.OpenAsync();
@@ -141,7 +150,7 @@ namespace IotDevice
 
         private static JObject LoadConfig(string configFile)
         {
-            if (!File.Exists(configFile)) { return null;  }
+            if (!File.Exists(configFile)) { return null; }
 
             JObject jobj;
 
@@ -153,7 +162,7 @@ namespace IotDevice
                     //var 
                     jobj = JObject.Parse(json);
                 }
-            } 
+            }
             catch (Exception Ex)
             {
                 throw Ex;
@@ -163,10 +172,12 @@ namespace IotDevice
             // if global thumbprint has been set in argument, it takes precedence
             if (!string.IsNullOrEmpty(thumbPrint))
             {
-                if (jobj["thumbPrint"] != null && !jobj["thumbPrint"].ToString().Equals(thumbPrint, StringComparison.OrdinalIgnoreCase)) {
+                if (jobj["thumbPrint"] != null && !jobj["thumbPrint"].ToString().Equals(thumbPrint, StringComparison.OrdinalIgnoreCase))
+                {
                     throw new Exception("Certificate thumbprint mismatch!");
-                }            
-            } else
+                }
+            }
+            else
             {
                 if (jobj["thumbPrint"] == null || string.IsNullOrWhiteSpace(jobj["thumbPrint"].ToString()))
                 {
@@ -175,7 +186,7 @@ namespace IotDevice
                 thumbPrint = jobj["thumbPrint"].ToString();
             }
 
-            
+
 
             // Check if IoT Hub exists, if not, register is needed.
             if (jobj.Property("iotHub") == null || string.IsNullOrWhiteSpace(jobj.Property("iotHub").Value.ToString()))
@@ -193,7 +204,7 @@ namespace IotDevice
 
             // Check if deviceID exists, if not, register is needed.
             if (jobj.Property("deviceId") == null || string.IsNullOrWhiteSpace(jobj.Property("deviceId").Value.ToString()))
-            {                                
+            {
                 if (string.IsNullOrWhiteSpace(deviceIdCert))
                 {
                     registerDevice = true;
@@ -215,9 +226,17 @@ namespace IotDevice
 
             if (jobj["deviceProperties"] != null)
             {
-                deviceTwinProperties = new TwinCollection(jobj["deviceProperties"].ToString());                
+                deviceTwinProperties = new TwinCollection(jobj["deviceProperties"].ToString());
+                
+                if (deviceTwinProperties.Contains("carCounterEnabled") )
+                {
+                    if (deviceTwinProperties["carCounterEnabled"] > 0)
+                    {
+                        carCounterEnabled = true;
+                    }
+                }
             }
-
+            
             return jobj;
         }
 
@@ -239,7 +258,9 @@ namespace IotDevice
                 var telemetryDataPoint = new
                 {
                     temperature = currentTemperature,
-                    humidity = currentHumidity
+                    humidity = currentHumidity,
+                    carcounter = carCounter
+
                 };
                 var messageString = JsonConvert.SerializeObject(telemetryDataPoint);
                 var message = new Message(Encoding.ASCII.GetBytes(messageString));
@@ -258,6 +279,40 @@ namespace IotDevice
             }
         }
 
+        private static async Task CountCars(CancellationToken ct)
+        {
+            Random rand = new Random();
+            Console.WriteLine("Car counter started");
+            while (true)
+            {
+                if (ct.IsCancellationRequested) break;
+                carCounter += rand.Next(0, 2);
+                Console.WriteLine("Car count: {0}", carCounter);
+                await Task.Delay(3000);
+            }
+            Console.WriteLine("Car counter stopped");
+        }
+
+        private static void StartCarCounter()
+        {
+            if ((carCountingTask != null) && (carCountingTask.IsCompleted == false ||
+                           carCountingTask.Status == TaskStatus.Running ||
+                           carCountingTask.Status == TaskStatus.WaitingToRun ||
+                           carCountingTask.Status == TaskStatus.WaitingForActivation))
+            {
+                Console.WriteLine("Car counting task is already running");
+            } else
+            {
+                carCounterCts = new CancellationTokenSource();
+                carCountingTask = CountCars(carCounterCts.Token);                
+            }
+        }
+
+        private static void StopCarCounter()
+        {
+            if (carCounterCts != null) carCounterCts.Cancel();
+        }
+
         private static async Task OnDesiredPropertyChanged(TwinCollection desiredProperties, object userContext)
         {
             try
@@ -273,6 +328,17 @@ namespace IotDevice
                     Console.WriteLine("\nInitiating config change");
                     if (desiredProperties["samplingFrequency"] != null && desiredProperties["samplingFrequency"] > 0) deviceTwinProperties["samplingFrequency"] = desiredProperties["samplingFrequency"];
                     if (desiredProperties["temperatureAlertThreshold"] != null && desiredProperties["temperatureAlertThreshold"] > 0) deviceTwinProperties["temperatureAlertThreshold"] = desiredProperties["temperatureAlertThreshold"];
+
+                    if (desiredProperties["carCounterEnabled"] != null) {
+                        if  (desiredProperties["carCounterEnabled"] > 0) {
+                            carCounterEnabled = true;
+                            StartCarCounter();
+                        } else {
+                            carCounterEnabled = false;
+                            StopCarCounter();
+                        }
+                        deviceTwinProperties["carCounterEnabled"] = desiredProperties["carCounterEnabled"];
+                    }
 
                     SaveConfig(GetConfig());
                     await deviceClient.UpdateReportedPropertiesAsync(deviceTwinProperties);
@@ -302,8 +368,8 @@ namespace IotDevice
 
             jobj.Add("thumbPrint", thumbPrint);
             jobj.Add("deviceId", deviceId);
-            jobj.Add("iotHub", deviceIotHub);
-            
+            jobj.Add("iotHub", deviceIotHub);            
+
             jobj.Add("deviceProperties", JToken.FromObject(deviceTwinProperties));
             return jobj;
         }
