@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotDevice", "IotDevice\IotDevice.csproj", "{95E02801-AEBE-4809-9DCD-C72602DD9AB8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IotDevice", "IotDevice\IotDevice.csproj", "{95E02801-AEBE-4809-9DCD-C72602DD9AB8}"
+EndProject
+Project("{E6C563F2-BDC2-4A24-ACBF-01715157DCBB}") = "gtlab02-saj01-temp-mgmt", "gtlab02-saj01-temp-mgmt\gtlab02-saj01-temp-mgmt.asaproj", "{A0EF0AAC-3329-4C33-A96C-CA7E0682C970}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,6 +20,12 @@ Global
 		{95E02801-AEBE-4809-9DCD-C72602DD9AB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95E02801-AEBE-4809-9DCD-C72602DD9AB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95E02801-AEBE-4809-9DCD-C72602DD9AB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0EF0AAC-3329-4C33-A96C-CA7E0682C970}.Debug - Register|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0EF0AAC-3329-4C33-A96C-CA7E0682C970}.Debug - Register|Any CPU.Build.0 = Debug|Any CPU
+		{A0EF0AAC-3329-4C33-A96C-CA7E0682C970}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0EF0AAC-3329-4C33-A96C-CA7E0682C970}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0EF0AAC-3329-4C33-A96C-CA7E0682C970}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0EF0AAC-3329-4C33-A96C-CA7E0682C970}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

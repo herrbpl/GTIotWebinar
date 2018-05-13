@@ -1,0 +1,84 @@
+﻿With CarCounter AS (
+SELECT
+  deviceId,
+  carCounter, 
+  CASE 
+    WHEN LAG(carCounter) OVER(partition by deviceId LIMIT Duration(hour,1)) IS NULL Then carCounter 
+    ELSE 
+      case when carCounter < LAG(carCounter) OVER(partition by deviceId LIMIT Duration(hour,1)) then carCounter
+           else carCounter - LAG(carCounter) OVER(partition by deviceId LIMIT Duration(hour,1)) end
+    end
+  as carCounterChange
+  FROM
+    sensorInput TimeStamp by eventTime
+), avgtemp as (
+SELECT  System.TimeStamp AS eventtime,
+  AVG(temperature) as averagetemperature,
+  CASE WHEN AVG(temperature) > 28.0 then 1 else 0 end as alertStatus,
+  deviceId as deviceId
+FROM
+    sensorInput TimeStamp by eventTime
+GROUP BY deviceId, TumblingWindow(minute,1)    
+UNION
+SELECT  System.TimeStamp AS eventtime,
+  AVG(temperature) as averagetemperature,
+  CASE WHEN AVG(temperature) > 28.0 then 1 else 0 end as alertStatus,
+  'all' as deviceId
+FROM
+    sensorInput TimeStamp by eventTime
+GROUP BY  TumblingWindow(minute,1)    
+), carcount AS (
+SELECT
+  System.TimeStamp AS eventtime,
+  SUM(carCounterChange) as CarsPerMinute,
+  deviceId
+FROM
+    carCounter
+GROUP BY deviceId, TumblingWindow(minute,1)    
+UNION
+SELECT
+  System.TimeStamp AS eventtime,
+  SUM(carCounterChange) as CarsPerMinute,
+  'all' as deviceId
+FROM
+    carCounter
+GROUP BY TumblingWindow(minute,1)    
+)
+
+SELECT
+  eventtime,
+  averagetemperature,
+  alertStatus,
+  deviceId
+INTO
+    temperateAggregateMinute
+FROM
+    avgtemp
+
+SELECT
+  eventtime,
+  CarsPerMinute,
+  deviceId
+INTO
+    carCounterOutput
+FROM
+    carcount
+
+SELECT
+  eventtime,
+  averagetemperature,
+  alertStatus,
+  deviceId
+INTO
+    eventHubOutput1
+FROM
+    avgtemp
+
+SELECT
+  eventtime,
+  CarsPerMinute,
+  deviceId
+INTO
+    eventHubOutput2
+FROM
+    carcount

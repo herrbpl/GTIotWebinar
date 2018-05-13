@@ -1,0 +1,8 @@
+﻿{
+  "InputAlias": "sensorInput",
+  "Type": "Data Stream",
+  "Format": "Json",
+  "FilePath": "E:\\t\\iot\\GTIotWebinar\\gtlab02-saj01-temp-mgmt\\samples\\sensorInput-4eff71a9-b1cb-449d-b3fe-85dbc30fe5c4.json",
+  "Sample": "{\r\n  \"eventtime\": \"2018-05-13T19:55:20.3693091Z\",\r\n  \"deviceid\": \"gtiotdevice02\",\r\n  \"temperature\": 22.512777204398429,\r\n  \"humidity\": 64.78002986161971,\r\n  \"carcounter\": 0,\r\n  \"EventProcessedUtcTime\": \"2018-05-13T20:01:10.3110691Z\",\r\n  \"PartitionId\": 3,\r\n  \"EventEnqueuedUtcTime\": \"2018-05-13T19:55:22.486Z\",\r\n  \"IoTHub\": {\r\n    \"MessageId\": null,\r\n    \"CorrelationId\": null,\r\n    \"ConnectionDeviceId\": \"gtiotdevice02\",\r\n    \"ConnectionDeviceGenerationId\": \"636618379264715943\",\r\n    \"EnqueuedTime\": \"2018-05-13T19:55:22.409Z\",\r\n    \"StreamId\": null\r\n  }\r\n}",
+  "ScriptType": "InputMock"
+}

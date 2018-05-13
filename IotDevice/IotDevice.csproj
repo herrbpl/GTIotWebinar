@@ -7,6 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="certificate.cer" />
+    <None Remove="certificate.pfx" />
+    <None Remove="deviceconfig.old.json" />
+    <None Remove="gtiotdevice02.cer" />
+    <None Remove="gtiotdevice02.pfx" />
+    <None Remove="gtiotdevice03.cer" />
+    <None Remove="gtiotdevice03.pfx" />
+    <None Remove="gtiotdevice05.cer" />
+    <None Remove="gtiotdevice05.cmd" />
+    <None Remove="gtiotdevice05.pfx" />
+    <None Remove="thumbprints.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.2.1" />
     <PackageReference Include="Microsoft.Azure.Devices" Version="1.6.0" />
     <PackageReference Include="Microsoft.Azure.Devices.Client" Version="1.7.1" />

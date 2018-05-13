@@ -1,0 +1,27 @@
+﻿{
+  "Name": "averageTemperature2",
+  "DataSourceType": "Table Storage",
+  "EventHubProperties": null,
+  "BlobStorageProperties": null,
+  "SQLDatabaseProperties": null,
+  "TableStorageProperties": {
+    "AccountKey": null,
+    "AccountName": "gtlab02sa01",
+    "BatchSize": 100,
+    "ColumnsToRemove": null,
+    "PartitionKey": "deviceid",
+    "RowKey": "eventtime",
+    "Table": "averageRoadTemperatures"
+  },
+  "ServiceBusQueueProperties": null,
+  "ServiceBusTopicProperties": null,
+  "DocumentDbProperties": null,
+  "Serialization": {
+    "Encoding": "UTF8",
+    "Type": "Json",
+    "FieldDelimiter": null,
+    "Format": "LineSeparated"
+  },
+  "DataSourceCredentialDomain": "07711959-fce3-42ee-b42d-f5099765b9e8.StreamAnalyticsCredential",
+  "ScriptType": "Output"
+}
