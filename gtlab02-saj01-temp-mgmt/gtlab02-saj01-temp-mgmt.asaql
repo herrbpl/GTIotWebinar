@@ -82,3 +82,18 @@ INTO
     eventHubOutput2
 FROM
     carcount
+
+-- Raise alerts but only if they have not already been rised
+SELECT
+  eventtime,
+  averagetemperature,
+  alertStatus,
+  deviceId
+INTO
+  alerts
+FROM
+   avgtemp
+WHERE
+    alertStatus = 1 AND
+    (LAG(alertStatus, 1) OVER (PARTITION BY deviceId LIMIT DURATION(minute, 5) ) <> alertStatus)
+     
