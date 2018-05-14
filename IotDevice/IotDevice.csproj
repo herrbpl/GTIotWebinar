@@ -30,4 +30,10 @@
     <PackageReference Include="Microsoft.Azure.Devices.Provisioning.Transport.Mqtt" Version="1.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="GenerateTestCertificate.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

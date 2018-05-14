@@ -22,7 +22,7 @@ GROUP BY deviceId, TumblingWindow(minute,1)
 UNION
 SELECT  System.TimeStamp AS eventtime,
   AVG(temperature) as averagetemperature,
-  CASE WHEN AVG(temperature) > 28.0 then 1 else 0 end as alertStatus,
+  CASE WHEN AVG(temperature) > 29.0 then 1 else 0 end as alertStatus,
   'all' as deviceId
 FROM
     sensorInput TimeStamp by eventTime
